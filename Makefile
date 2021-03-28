@@ -39,7 +39,7 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := mbed-os-example-ble-LED1
+PROJECT := mbed-os-test
 
 
 # Project settings
