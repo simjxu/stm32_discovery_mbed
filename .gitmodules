@@ -1,0 +1,6 @@
+[submodule "mbed-os"]
+	path = mbed-os
+	url = https://github.com/ARMmbed/mbed-os
+[submodule "ble-x-nucleo-idb0xa1"]
+	path = ble-x-nucleo-idb0xa1
+	url = https://github.com/ARMmbed/ble-x-nucleo-idb0xa1
