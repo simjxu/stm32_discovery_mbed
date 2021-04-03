@@ -20,11 +20,12 @@
 #include "LEDService.h"
 
 Serial pc(USBTX, USBRX);
+Thread thread;
 
 DigitalOut alivenessLED(LED1, 0);
 DigitalOut actuatedLED(LED2, 0);
 
-const static char     DEVICE_NAME[] = "LED";
+const static char     DEVICE_NAME[] = "LED";        // static means it's only visible to this translation unit, main.cpp
 static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID};
 
 static EventQueue eventQueue(/* event count */ 10 * EVENTS_EVENT_SIZE);
@@ -101,10 +102,8 @@ void scheduleBleEventsProcessing(BLE::OnEventsToProcessCallbackContext* context)
     eventQueue.call(Callback<void()>(&ble, &BLE::processEvents));
 }
 
-int main()
+void ble_thread()
 {
-    pc.printf("hello world!\n");
-
     eventQueue.call_every(500, blinkCallback);
 
     BLE &ble = BLE::Instance();
@@ -112,6 +111,16 @@ int main()
     ble.init(bleInitComplete);
 
     eventQueue.dispatch_forever();
+}
+
+int main()
+{
+    // Put ble on a separate thread, not sure if this is the right way to do it.
+    thread.start(ble_thread);
+    while(1) {
+        pc.printf("hello world!\r\n");
+        wait(2);
+    }
 
     return 0;
 }
