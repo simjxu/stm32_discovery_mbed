@@ -1,4 +1,5 @@
 BUILD/
+*.bin
 
 # Prerequisites
 *.d

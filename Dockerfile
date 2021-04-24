@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
-COPY . /stm32_discovery_mbed
+WORKDIR /work
+
+# Add all files to the "work" directory
+ADD . /work
 
 RUN apt-get update && \
     apt-get upgrade -y && \
