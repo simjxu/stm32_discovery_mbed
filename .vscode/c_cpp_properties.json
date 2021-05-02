@@ -59,20 +59,19 @@
                 "${workspaceRoot}\\mbed-os\\rtos\\rtx4\\*",
                 "${workspaceRoot}\\mbed-os\\events\\*",
                 "${workspaceRoot}\\mbed-os\\events\\equeue\\*",
-                "${workspaceRoot}\\shields\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\bluenrg\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\bluenrg\\bluenrg-hci\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\bluenrg\\platform\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\bluenrg\\utils\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\bluenrg-hci\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\bluenrg-hci\\hci\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\bluenrg-hci\\hci\\controller\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\bluenrg-hci\\utils\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\platform\\*",
-                "${workspaceRoot}\\shields\\TARGET_ST_BLUENRG\\source\\utils\\*",
                 "${workspaceRoot}\\source\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\bluenrg\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\bluenrg\\bluenrg-hci\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\bluenrg\\platform\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\bluenrg\\utils\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\bluenrg-hci\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\bluenrg-hci\\hci\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\bluenrg-hci\\hci\\controller\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\bluenrg-hci\\utils\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\platform\\*",
+                "${workspaceRoot}\\ble-x-nucleo-idb0xa1\\source\\utils\\*",
                 "${workspaceRoot}\\mbed-os\\features\\FEATURE_BLE\\*",
                 "${workspaceRoot}\\mbed-os\\features\\FEATURE_BLE\\ble\\*",
                 "${workspaceRoot}\\mbed-os\\features\\FEATURE_BLE\\ble\\services\\*",
@@ -86,9 +85,9 @@
                 "/Library/Frameworks"
             ],
             "intelliSenseMode": "macos-clang-x64",
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c11",
-            "cppStandard": "c++98"
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
         },
         {
             "includePath": [
@@ -149,7 +148,7 @@
                 "${workspaceRoot}/mbed-os/rtos/rtx4/*",
                 "${workspaceRoot}/mbed-os/events/*",
                 "${workspaceRoot}/mbed-os/events/equeue/*",
-                "${workspaceRoot}/shields/*",
+                "${workspaceRoot}/source/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/bluenrg/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/bluenrg/bluenrg-hci/*",
@@ -162,7 +161,6 @@
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/platform/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/utils/*",
-                "${workspaceRoot}/source/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/ble/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/ble/services/*",
@@ -176,9 +174,9 @@
                 "/Library/Frameworks"
             ],
             "intelliSenseMode": "macos-clang-x64",
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c11",
-            "cppStandard": "c++98"
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
         },
         {
             "includePath": [
@@ -239,7 +237,7 @@
                 "${workspaceRoot}/mbed-os/rtos/rtx4/*",
                 "${workspaceRoot}/mbed-os/events/*",
                 "${workspaceRoot}/mbed-os/events/equeue/*",
-                "${workspaceRoot}/shields/*",
+                "${workspaceRoot}/source/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/bluenrg/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/bluenrg/bluenrg-hci/*",
@@ -252,7 +250,6 @@
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/platform/*",
                 "${workspaceRoot}/ble-x-nucleo-idb0xa1/source/utils/*",
-                "${workspaceRoot}/source/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/ble/*",
                 "${workspaceRoot}/mbed-os/features/FEATURE_BLE/ble/services/*",
@@ -262,9 +259,9 @@
             ],
             "name": "Linux",
             "intelliSenseMode": "linux-gcc-x64",
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c11",
-            "cppStandard": "c++98"
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
         }
     ],
     "version": 4

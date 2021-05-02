@@ -39,13 +39,35 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := mbed-os-test
+PROJECT := stm32_discovery_mbed
 
 
 # Project settings
 ###############################################################################
 # Objects and Paths
 
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGDevice.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGDiscoveredCharacteristic.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGap.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattClient.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattConnectionClient.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattServer.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/ble_hci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/ble_hci_le.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_gap_aci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_gatt_aci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_hal_aci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_l2cap_aci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_updater_aci.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_utils.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_gp_timer.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_list.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_osal.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/ble_clock.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/btle.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/stm32_bluenrg_ble.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/utils/ble_payload.o
+OBJECTS += ./ble-x-nucleo-idb0xa1/source/utils/ble_utils.o
 OBJECTS += ./mbed-os/drivers/AnalogIn.o
 OBJECTS += ./mbed-os/drivers/BusIn.o
 OBJECTS += ./mbed-os/drivers/BusInOut.o
@@ -358,33 +380,23 @@ OBJECTS += ./mbed-os/targets/TARGET_STM/stm_spi_api.o
 OBJECTS += ./mbed-os/targets/TARGET_STM/trng_api.o
 OBJECTS += ./mbed-os/targets/TARGET_STM/us_ticker_16b.o
 OBJECTS += ./mbed-os/targets/TARGET_STM/us_ticker_32b.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGDevice.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGDiscoveredCharacteristic.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGap.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattClient.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattConnectionClient.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/BlueNRGGattServer.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/ble_hci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/ble_hci_le.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_gap_aci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_gatt_aci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_hal_aci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_l2cap_aci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_updater_aci.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller/bluenrg_utils.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_gp_timer.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_list.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils/ble_osal.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/ble_clock.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/btle.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/platform/stm32_bluenrg_ble.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/utils/ble_payload.o
-OBJECTS += ./ble-x-nucleo-idb0xa1/source/utils/ble_utils.o
 OBJECTS += ./source/main.o
 
 
 INCLUDE_PATHS += -I../
 INCLUDE_PATHS += -I../.
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/bluenrg-hci
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/platform
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/utils
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/platform
+INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/utils
 INCLUDE_PATHS += -I.././mbed-os
 INCLUDE_PATHS += -I.././mbed-os/cmsis
 INCLUDE_PATHS += -I.././mbed-os/cmsis/TARGET_CORTEX_M
@@ -447,19 +459,6 @@ INCLUDE_PATHS += -I.././mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4
 INCLUDE_PATHS += -I.././mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/device
 INCLUDE_PATHS += -I.././mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/device/TOOLCHAIN_GCC_ARM
 INCLUDE_PATHS += -I.././mbed-os/targets/TARGET_STM/TARGET_STM32L4/device
-INCLUDE_PATHS += -I.././shields
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/bluenrg-hci
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/platform
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/bluenrg/utils
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/hci/controller
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/bluenrg-hci/utils
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/platform
-INCLUDE_PATHS += -I.././ble-x-nucleo-idb0xa1/source/utils
 INCLUDE_PATHS += -I.././source
 
 LIBRARY_PATHS :=
@@ -507,7 +506,6 @@ C_FLAGS += -DTARGET_STM32L475xG
 C_FLAGS += -DDEVICE_ANALOGIN=1
 C_FLAGS += -DFEATURE_BLE=1
 C_FLAGS += -DTARGET_STM32L4
-C_FLAGS += -DMBED_BUILD_TIMESTAMP=1616889143.93
 C_FLAGS += -DDEVICE_SPI_ASYNCH=1
 C_FLAGS += -DTARGET_ST_BLUENRG
 C_FLAGS += -DDEVICE_SERIAL=1
@@ -522,6 +520,7 @@ C_FLAGS += -DTARGET_FF_ARDUINO
 C_FLAGS += -DDEVICE_PORTIN=1
 C_FLAGS += -DTARGET_STM
 C_FLAGS += -DDEVICE_SERIAL_FC=1
+C_FLAGS += -DMBED_BUILD_TIMESTAMP=1619934664.38
 C_FLAGS += -DDEVICE_TRNG=1
 C_FLAGS += -DTARGET_LIKE_MBED
 C_FLAGS += -D__MBED_CMSIS_RTOS_CM
@@ -568,7 +567,6 @@ CXX_FLAGS += -DTARGET_STM32L475xG
 CXX_FLAGS += -DDEVICE_ANALOGIN=1
 CXX_FLAGS += -DFEATURE_BLE=1
 CXX_FLAGS += -DTARGET_STM32L4
-CXX_FLAGS += -DMBED_BUILD_TIMESTAMP=1616889143.93
 CXX_FLAGS += -DDEVICE_SPI_ASYNCH=1
 CXX_FLAGS += -DTARGET_ST_BLUENRG
 CXX_FLAGS += -DDEVICE_SERIAL=1
@@ -583,6 +581,7 @@ CXX_FLAGS += -DTARGET_FF_ARDUINO
 CXX_FLAGS += -DDEVICE_PORTIN=1
 CXX_FLAGS += -DTARGET_STM
 CXX_FLAGS += -DDEVICE_SERIAL_FC=1
+CXX_FLAGS += -DMBED_BUILD_TIMESTAMP=1619934664.38
 CXX_FLAGS += -DDEVICE_TRNG=1
 CXX_FLAGS += -DTARGET_LIKE_MBED
 CXX_FLAGS += -D__MBED_CMSIS_RTOS_CM
