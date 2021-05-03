@@ -87,3 +87,6 @@ RUN python3 --version | tee env_settings && \
 WORKDIR /work
 
 ADD . /work
+
+RUN chmod u+x fixes.sh && \
+    ./fixes.sh
