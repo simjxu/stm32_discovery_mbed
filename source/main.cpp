@@ -19,6 +19,15 @@
 #include "ble/BLE.h"
 #include "LEDService.h"
 
+// Sensors include
+#include "stm32l475e_iot01_tsensor.h"
+#include "stm32l475e_iot01_hsensor.h"
+#include "stm32l475e_iot01_psensor.h"
+#include "stm32l475e_iot01_magneto.h"
+#include "stm32l475e_iot01_gyro.h"
+#include "stm32l475e_iot01_accelero.h"
+
+
 Serial pc(USBTX, USBRX);
 Thread thread;
 
@@ -115,10 +124,51 @@ void ble_thread()
 
 int main()
 {
+    float sensor_value = 0;
+    int16_t pDataXYZ[3] = {0};
+    float pGyroDataXYZ[3] = {0};
+
+    // Sensors work
+    pc.printf("Start sensor init\n");
+
+    BSP_TSENSOR_Init();
+    BSP_HSENSOR_Init();
+    BSP_PSENSOR_Init();
+
+    BSP_MAGNETO_Init();
+    BSP_GYRO_Init();
+    BSP_ACCELERO_Init();
+
+    // End Sensors work
+
     // Put ble on a separate thread, not sure if this is the right way to do it.
     thread.start(ble_thread);
     while(1) {
-        pc.printf("hello world!\r\n");
+        // Printing sensor values
+        sensor_value = BSP_TSENSOR_ReadTemp();
+        pc.printf("\nTEMPERATURE = %.2f degC\n", sensor_value);
+
+        sensor_value = BSP_HSENSOR_ReadHumidity();
+        pc.printf("HUMIDITY    = %.2f %%\n", sensor_value);
+
+        sensor_value = BSP_PSENSOR_ReadPressure();
+        pc.printf("PRESSURE is = %.2f mBar\n", sensor_value);
+
+        BSP_MAGNETO_GetXYZ(pDataXYZ);
+        printf("\nMAGNETO_X = %d\n", pDataXYZ[0]);
+        printf("MAGNETO_Y = %d\n", pDataXYZ[1]);
+        printf("MAGNETO_Z = %d\n", pDataXYZ[2]);
+
+        BSP_GYRO_GetXYZ(pGyroDataXYZ);
+        printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+        printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+        printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+
+        BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+        printf("\nACCELERO_X = %d\n", pDataXYZ[0]);
+        printf("ACCELERO_Y = %d\n", pDataXYZ[1]);
+        printf("ACCELERO_Z = %d\n", pDataXYZ[2]);
+
         wait(2);
     }
 
