@@ -17,7 +17,10 @@
 #include <events/mbed_events.h>
 #include <mbed.h>
 #include "ble/BLE.h"
+
+// BLE Services
 #include "LEDService.h"
+#include "sensorService.h"
 
 // Sensors include
 #include "stm32l475e_iot01_tsensor.h"
@@ -34,12 +37,13 @@ Thread thread;
 DigitalOut alivenessLED(LED1, 0);
 DigitalOut actuatedLED(LED2, 0);
 
-const static char     DEVICE_NAME[] = "LED";        // static means it's only visible to this translation unit, main.cpp
-static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID};
+const static char     DEVICE_NAME[] = "LED and Sensors";        // static means it's only visible to this translation unit, main.cpp
+static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID, sensorService::SENSOR_SERVICE_UUID};
 
 static EventQueue eventQueue(/* event count */ 10 * EVENTS_EVENT_SIZE);
 
 LEDService *ledServicePtr;
+sensorService *sensorServicePtr;
 
 void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
 {
@@ -63,6 +67,19 @@ void onDataWrittenCallback(const GattWriteCallbackParams *params) {
         actuatedLED = *(params->data);
     }
 }
+
+// ------------------------------------------------------------------------------- WORK IN PROGRESS
+/**
+ * This callback allows the sensorService to update the sensor values.
+ *
+ * @param[in] params
+ *     Information about the characterisitc being updated.
+ */
+// void onSensorReadingCallback(const GattWriteCallbackParams *params) {
+//     if ((params->handle == ledServicePtr->getValueHandle()) && (params->len == 1)) {
+//         actuatedLED = *(params->data);
+//     }
+// }
 
 /**
  * This function is called when the ble initialization process has failled
@@ -94,8 +111,13 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
     ble.gap().onDisconnection(disconnectionCallback);
     ble.gattServer().onDataWritten(onDataWrittenCallback);
 
+    // Initial values for Characteristics
     bool initialValueForLEDCharacteristic = false;
+    float initialValueForSensorCharacteristic = 0.0f;
+
+    // Service pointers -- why do we need this?
     ledServicePtr = new LEDService(ble, initialValueForLEDCharacteristic);
+    sensorServicePtr = new sensorService(ble, initialValueForSensorCharacteristic);
 
     /* setup advertising */
     ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
@@ -113,6 +135,7 @@ void scheduleBleEventsProcessing(BLE::OnEventsToProcessCallbackContext* context)
 
 void ble_thread()
 {
+    // Blink LED every 500 ms to indicate device is alive
     eventQueue.call_every(500, blinkCallback);
 
     BLE &ble = BLE::Instance();
