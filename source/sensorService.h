@@ -3,12 +3,12 @@
 #ifndef __BLE_SENSOR_SERVICE_H__
 #define __BLE_SENSOR_SERVICE_H__
 
-class sensorService {
+class SensorService {
 public:
     const static uint16_t SENSOR_SERVICE_UUID              = 0xB000;
     const static uint16_t SENSOR_STATE_CHARACTERISTIC_UUID = 0xB001;
 
-    sensorService(BLEDevice &_ble, float initialValueForSensorCharacteristic) :
+    SensorService(BLEDevice &_ble, float initialValueForSensorCharacteristic) :
         ble(_ble), sensorValue(SENSOR_STATE_CHARACTERISTIC_UUID, &initialValueForSensorCharacteristic)
     {
         GattCharacteristic *charTable[] = {&sensorValue};

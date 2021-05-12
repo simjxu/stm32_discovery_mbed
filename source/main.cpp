@@ -38,12 +38,12 @@ DigitalOut alivenessLED(LED1, 0);
 DigitalOut actuatedLED(LED2, 0);
 
 const static char     DEVICE_NAME[] = "LED and Sensors";        // static means it's only visible to this translation unit, main.cpp
-static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID, sensorService::SENSOR_SERVICE_UUID};
+static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID, SensorService::SENSOR_SERVICE_UUID};
 
 static EventQueue eventQueue(/* event count */ 10 * EVENTS_EVENT_SIZE);
 
 LEDService *ledServicePtr;
-sensorService *sensorServicePtr;
+SensorService *sensorServicePtr;
 
 void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
 {
@@ -64,22 +64,21 @@ void blinkCallback(void)
  */
 void onDataWrittenCallback(const GattWriteCallbackParams *params) {
     if ((params->handle == ledServicePtr->getValueHandle()) && (params->len == 1)) {
+        // Update the actuated LED to match the value that was written in
         actuatedLED = *(params->data);
     }
 }
 
 // ------------------------------------------------------------------------------- WORK IN PROGRESS
 /**
- * This callback allows the sensorService to update the sensor values.
+ * This callback allows the SensorService to update the sensor values.
  *
  * @param[in] params
  *     Information about the characterisitc being updated.
  */
-// void onSensorReadingCallback(const GattWriteCallbackParams *params) {
-//     if ((params->handle == ledServicePtr->getValueHandle()) && (params->len == 1)) {
-//         actuatedLED = *(params->data);
-//     }
-// }
+void onSensorReadingCallback(const GattReadCallbackParams *params) {
+    pc.printf("sensor was read\r\n");
+}
 
 /**
  * This function is called when the ble initialization process has failled
@@ -111,6 +110,7 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
     // Establish callback functions for certain actions
     ble.gap().onDisconnection(disconnectionCallback);
     ble.gattServer().onDataWritten(onDataWrittenCallback);
+    ble.gattServer().onDataRead(onSensorReadingCallback);
 
     // Initial values for Characteristics
     bool initialValueForLEDCharacteristic = false;
@@ -118,7 +118,7 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
 
     // Service pointers -- why do we need this?
     ledServicePtr = new LEDService(ble, initialValueForLEDCharacteristic);
-    sensorServicePtr = new sensorService(ble, initialValueForSensorCharacteristic);
+    sensorServicePtr = new SensorService(ble, initialValueForSensorCharacteristic);
 
     /* setup advertising */
     ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
@@ -167,34 +167,36 @@ int main()
 
     // Put ble on a separate thread, not sure if this is the right way to do it.
     thread.start(ble_thread);
-    while(1) {
-        // Printing sensor values
-        sensor_value = BSP_TSENSOR_ReadTemp();
-        pc.printf("\nTEMPERATURE = %.2f degC\n", sensor_value);
 
-        sensor_value = BSP_HSENSOR_ReadHumidity();
-        pc.printf("HUMIDITY    = %.2f %%\n", sensor_value);
+    // // Print Sensor values
+    // while(1) {
+    //     // Printing sensor values
+    //     sensor_value = BSP_TSENSOR_ReadTemp();
+    //     pc.printf("\nTEMPERATURE = %.2f degC\n", sensor_value);
 
-        sensor_value = BSP_PSENSOR_ReadPressure();
-        pc.printf("PRESSURE is = %.2f mBar\n", sensor_value);
+    //     sensor_value = BSP_HSENSOR_ReadHumidity();
+    //     pc.printf("HUMIDITY    = %.2f %%\n", sensor_value);
 
-        BSP_MAGNETO_GetXYZ(pDataXYZ);
-        printf("\nMAGNETO_X = %d\n", pDataXYZ[0]);
-        printf("MAGNETO_Y = %d\n", pDataXYZ[1]);
-        printf("MAGNETO_Z = %d\n", pDataXYZ[2]);
+    //     sensor_value = BSP_PSENSOR_ReadPressure();
+    //     pc.printf("PRESSURE is = %.2f mBar\n", sensor_value);
 
-        BSP_GYRO_GetXYZ(pGyroDataXYZ);
-        printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
-        printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
-        printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+    //     BSP_MAGNETO_GetXYZ(pDataXYZ);
+    //     printf("\nMAGNETO_X = %d\n", pDataXYZ[0]);
+    //     printf("MAGNETO_Y = %d\n", pDataXYZ[1]);
+    //     printf("MAGNETO_Z = %d\n", pDataXYZ[2]);
 
-        BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-        printf("\nACCELERO_X = %d\n", pDataXYZ[0]);
-        printf("ACCELERO_Y = %d\n", pDataXYZ[1]);
-        printf("ACCELERO_Z = %d\n", pDataXYZ[2]);
+    //     BSP_GYRO_GetXYZ(pGyroDataXYZ);
+    //     printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+    //     printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+    //     printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
 
-        wait(2);
-    }
+    //     BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+    //     printf("\nACCELERO_X = %d\n", pDataXYZ[0]);
+    //     printf("ACCELERO_Y = %d\n", pDataXYZ[1]);
+    //     printf("ACCELERO_Z = %d\n", pDataXYZ[2]);
+
+    //     wait(2);
+    // }
 
     return 0;
 }
