@@ -42,6 +42,8 @@ static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID, SensorServi
 
 static EventQueue eventQueue(/* event count */ 10 * EVENTS_EVENT_SIZE);
 
+static float currentTemperature = 0.0;
+
 LEDService *ledServicePtr;
 SensorService *sensorServicePtr;
 
@@ -69,7 +71,6 @@ void onDataWrittenCallback(const GattWriteCallbackParams *params) {
     }
 }
 
-// ------------------------------------------------------------------------------- WORK IN PROGRESS
 /**
  * This callback allows the SensorService to update the sensor values.
  *
@@ -77,7 +78,32 @@ void onDataWrittenCallback(const GattWriteCallbackParams *params) {
  *     Information about the characterisitc being updated.
  */
 void onSensorReadingCallback(const GattReadCallbackParams *params) {
-    pc.printf("sensor was read\r\n");
+    if (params->handle == sensorServicePtr->getValueHandle()) {
+        pc.printf("BLE: something was read\r\n");
+    }
+    
+}
+
+/**
+ * This updates the sensor reading on the BLE Service
+ */
+void updateSensorValue(void)
+{
+    currentTemperature = BSP_TSENSOR_ReadTemp();
+    pc.printf("\nTEMPERATURE = %.2f degC\n", currentTemperature);
+    sensorServicePtr->updateTemperature(currentTemperature);
+
+}
+
+/**
+ * This callback is called periodically to update the sensor values
+ */
+void readingCallback(void)
+{
+    // Read sensor, and update the sensor value
+    if (BLE::Instance().gap().getState().connected) {
+        eventQueue.call(updateSensorValue);
+    }
 }
 
 /**
@@ -138,6 +164,9 @@ void ble_thread()
 {
     // Blink LED every 500 ms to indicate device is alive
     eventQueue.call_every(500, blinkCallback);
+
+    // Collect a reading every 500 ms
+    eventQueue.call_every(500, readingCallback);
 
     BLE &ble = BLE::Instance();
     ble.onEventsToProcess(scheduleBleEventsProcessing);
