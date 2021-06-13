@@ -17,7 +17,10 @@
 #include <events/mbed_events.h>
 #include <mbed.h>
 #include "ble/BLE.h"
+
+// BLE Services
 #include "LEDService.h"
+#include "sensorService.h"
 
 // Sensors include
 #include "stm32l475e_iot01_tsensor.h"
@@ -34,12 +37,15 @@ Thread thread;
 DigitalOut alivenessLED(LED1, 0);
 DigitalOut actuatedLED(LED2, 0);
 
-const static char     DEVICE_NAME[] = "LED";        // static means it's only visible to this translation unit, main.cpp
-static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID};
+const static char     DEVICE_NAME[] = "LED and Sensors";        // static means it's only visible to this translation unit, main.cpp
+static const uint16_t uuid16_list[] = {LEDService::LED_SERVICE_UUID, SensorService::SENSOR_SERVICE_UUID};
 
 static EventQueue eventQueue(/* event count */ 10 * EVENTS_EVENT_SIZE);
 
+static float currentTemperature = 0.0;
+
 LEDService *ledServicePtr;
+SensorService *sensorServicePtr;
 
 void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
 {
@@ -60,7 +66,43 @@ void blinkCallback(void)
  */
 void onDataWrittenCallback(const GattWriteCallbackParams *params) {
     if ((params->handle == ledServicePtr->getValueHandle()) && (params->len == 1)) {
+        // Update the actuated LED to match the value that was written in
         actuatedLED = *(params->data);
+    }
+}
+
+/**
+ * This callback allows the SensorService to update the sensor values.
+ *
+ * @param[in] params
+ *     Information about the characterisitc being updated.
+ */
+void onSensorReadingCallback(const GattReadCallbackParams *params) {
+    if (params->handle == sensorServicePtr->getValueHandle()) {
+        pc.printf("BLE: something was read\r\n");
+    }
+    
+}
+
+/**
+ * This updates the sensor reading on the BLE Service
+ */
+void updateSensorValue(void)
+{
+    currentTemperature = BSP_TSENSOR_ReadTemp();
+    pc.printf("\nTEMPERATURE = %.2f degC\n", currentTemperature);
+    sensorServicePtr->updateTemperature(currentTemperature);
+
+}
+
+/**
+ * This callback is called periodically to update the sensor values
+ */
+void readingCallback(void)
+{
+    // Read sensor, and update the sensor value
+    if (BLE::Instance().gap().getState().connected) {
+        eventQueue.call(updateSensorValue);
     }
 }
 
@@ -91,11 +133,18 @@ void bleInitComplete(BLE::InitializationCompleteCallbackContext *params)
         return;
     }
 
+    // Establish callback functions for certain actions
     ble.gap().onDisconnection(disconnectionCallback);
     ble.gattServer().onDataWritten(onDataWrittenCallback);
+    ble.gattServer().onDataRead(onSensorReadingCallback);
 
+    // Initial values for Characteristics
     bool initialValueForLEDCharacteristic = false;
+    float initialValueForSensorCharacteristic = 0.0f;
+
+    // Service pointers -- why do we need this?
     ledServicePtr = new LEDService(ble, initialValueForLEDCharacteristic);
+    sensorServicePtr = new SensorService(ble, initialValueForSensorCharacteristic);
 
     /* setup advertising */
     ble.gap().accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
@@ -113,7 +162,11 @@ void scheduleBleEventsProcessing(BLE::OnEventsToProcessCallbackContext* context)
 
 void ble_thread()
 {
+    // Blink LED every 500 ms to indicate device is alive
     eventQueue.call_every(500, blinkCallback);
+
+    // Collect a reading every 500 ms
+    eventQueue.call_every(500, readingCallback);
 
     BLE &ble = BLE::Instance();
     ble.onEventsToProcess(scheduleBleEventsProcessing);
@@ -143,34 +196,36 @@ int main()
 
     // Put ble on a separate thread, not sure if this is the right way to do it.
     thread.start(ble_thread);
-    while(1) {
-        // Printing sensor values
-        sensor_value = BSP_TSENSOR_ReadTemp();
-        pc.printf("\nTEMPERATURE = %.2f degC\n", sensor_value);
 
-        sensor_value = BSP_HSENSOR_ReadHumidity();
-        pc.printf("HUMIDITY    = %.2f %%\n", sensor_value);
+    // // Print Sensor values
+    // while(1) {
+    //     // Printing sensor values
+    //     sensor_value = BSP_TSENSOR_ReadTemp();
+    //     pc.printf("\nTEMPERATURE = %.2f degC\n", sensor_value);
 
-        sensor_value = BSP_PSENSOR_ReadPressure();
-        pc.printf("PRESSURE is = %.2f mBar\n", sensor_value);
+    //     sensor_value = BSP_HSENSOR_ReadHumidity();
+    //     pc.printf("HUMIDITY    = %.2f %%\n", sensor_value);
 
-        BSP_MAGNETO_GetXYZ(pDataXYZ);
-        printf("\nMAGNETO_X = %d\n", pDataXYZ[0]);
-        printf("MAGNETO_Y = %d\n", pDataXYZ[1]);
-        printf("MAGNETO_Z = %d\n", pDataXYZ[2]);
+    //     sensor_value = BSP_PSENSOR_ReadPressure();
+    //     pc.printf("PRESSURE is = %.2f mBar\n", sensor_value);
 
-        BSP_GYRO_GetXYZ(pGyroDataXYZ);
-        printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
-        printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
-        printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+    //     BSP_MAGNETO_GetXYZ(pDataXYZ);
+    //     printf("\nMAGNETO_X = %d\n", pDataXYZ[0]);
+    //     printf("MAGNETO_Y = %d\n", pDataXYZ[1]);
+    //     printf("MAGNETO_Z = %d\n", pDataXYZ[2]);
 
-        BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-        printf("\nACCELERO_X = %d\n", pDataXYZ[0]);
-        printf("ACCELERO_Y = %d\n", pDataXYZ[1]);
-        printf("ACCELERO_Z = %d\n", pDataXYZ[2]);
+    //     BSP_GYRO_GetXYZ(pGyroDataXYZ);
+    //     printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+    //     printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+    //     printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
 
-        wait(2);
-    }
+    //     BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+    //     printf("\nACCELERO_X = %d\n", pDataXYZ[0]);
+    //     printf("ACCELERO_Y = %d\n", pDataXYZ[1]);
+    //     printf("ACCELERO_Z = %d\n", pDataXYZ[2]);
+
+    //     wait(2);
+    // }
 
     return 0;
 }
