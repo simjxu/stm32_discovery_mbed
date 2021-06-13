@@ -12,7 +12,7 @@ public:
     SensorService(BLEDevice &_ble, float initialValueForSensorCharacteristic) :
         ble(_ble), 
         valueBytes(initialValueForSensorCharacteristic), 
-        tempMeasurement(GattCharacteristic::UUID_TEMPERATURE_MEASUREMENT_CHAR, (TemperatureValueBytes *)valueBytes.getPointer(), GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY)
+        tempMeasurement(SENSOR_STATE_CHARACTERISTIC_UUID, (TemperatureValueBytes *)valueBytes.getPointer(), GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY)
     {
         GattCharacteristic *charTable[] = {&tempMeasurement};
         GattService         sensorService(SENSOR_SERVICE_UUID, charTable, sizeof(charTable) / sizeof(GattCharacteristic *));
@@ -57,8 +57,8 @@ private:
         }
 
         void updateTemperature(float temp) {
-            // uint32_t temp_ieee11073 = quick_ieee11073_from_float(temp);
-            // memcpy(&bytes[OFFSET_OF_VALUE], &temp_ieee11073, sizeof(float));
+            uint32_t temp_ieee11073 = quick_ieee11073_from_float(temp);
+            memcpy(&bytes[OFFSET_OF_VALUE], &temp_ieee11073, sizeof(float));
             memcpy(&bytes[OFFSET_OF_VALUE], &temp, sizeof(float));
         }
 
