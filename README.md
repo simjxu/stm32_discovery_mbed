@@ -8,10 +8,14 @@ Target: DISCO_L475VG_IOT01A
 3. `make` to compile
 4. Drag and drop the .bin file inside `/BUILD` to your USB connected B-L475E discovery node. (says DIS_L4IOT on my mac)
 
+### Ensuring correct toolchain
+Ensure that the mbed-os.lib file has the hash to the version that you want to use
+The current working one for BLE uses https://github.com/ARMmbed/mbed-os/#ed9d1da9dd0c43907ba40cba5ebd9f2c6da3dc07
 ### MBED compilation
 Download mbed cli.
 1. `mbed toolchain GCC_ARM` to set the toolchain
 2. `mbed compile`
+
 ### Running Docker
 The Dockerfile has everything needed to compile the binary. Download Docker for VSCode, then 
 1. Right click the Dockerfile and select "Build Image"

@@ -11,5 +11,6 @@
         "ostream": "cpp",
         "sstream": "cpp",
         "streambuf": "cpp"
-    }
+    },
+    "git.ignoreLimitWarning": true
 }

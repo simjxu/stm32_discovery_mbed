@@ -27,7 +27,6 @@ BUILD/
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
